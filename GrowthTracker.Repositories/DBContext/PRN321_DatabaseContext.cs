@@ -74,7 +74,7 @@ public partial class PRN321_DatabaseContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Order__AccountID__49C3F6B7");
         });
 
@@ -90,7 +90,7 @@ public partial class PRN321_DatabaseContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__OrderDeta__Order__4CA06362");
         });
 

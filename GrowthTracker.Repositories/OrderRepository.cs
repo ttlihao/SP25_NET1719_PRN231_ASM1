@@ -35,7 +35,7 @@ namespace GrowthTracker.Repositories
             return await _context.Orders
                 .Include(b => b.OrderDetails)
                 .Include(b => b.Account)
-                .FirstOrDefaultAsync(b => id == b.OrderId );
+                .FirstOrDefaultAsync(b => id == b.OrderId);
         }
     }
 }

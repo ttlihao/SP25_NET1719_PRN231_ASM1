@@ -44,15 +44,17 @@ namespace GrowthTracker.APIServices.Controllers
         }
 
         // PUT api/<OrderController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public async Task<int> Put([FromBody] Order orderCreate)
         {
+            return await orderService.UpdateOrderAsync(orderCreate);
         }
 
         // DELETE api/<OrderController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<bool> Delete(string id)
         {
+            return await orderService.DeleteOrderAsync(id);
         }
     }
 }

@@ -49,9 +49,9 @@ namespace GrowthTracker.Services
             return await accountRepository.GetAllAsync();
         }
 
-        public Task<Account> LoginAccount(string username, string password)
+        public async Task<Account> LoginAccount(string username, string password)
         {
-            throw new NotImplementedException();
+            return await accountRepository.LoginAccount(username, password);
         }
 
         public async Task<int> UpdateAccountAsync(Account account)

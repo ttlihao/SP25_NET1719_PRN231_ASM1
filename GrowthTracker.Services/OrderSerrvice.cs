@@ -34,7 +34,7 @@ namespace GrowthTracker.Services
 
         public async Task<bool> DeleteOrderAsync(string id)
         {
-            var order = orderRepository.GetById(id);
+            var order = await orderRepository.GetOrderByIdAsync(int.Parse(id));
             if (order != null)
             {
                 return await orderRepository.RemoveAsync(order);
