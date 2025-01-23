@@ -20,10 +20,8 @@ namespace GrowthTracker.Services
     public class AccountService : IAccountService
     {
         private readonly AccountRepository accountRepository;
-        public AccountService()
-        {
+        public AccountService() =>
             this.accountRepository = new AccountRepository(); 
-        }
         public async Task<int> CreateAccountAsync(Account account)
         {
             return await accountRepository.CreateAsync(account);

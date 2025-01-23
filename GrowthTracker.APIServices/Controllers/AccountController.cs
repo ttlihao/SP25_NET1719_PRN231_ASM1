@@ -1,6 +1,10 @@
 ﻿using GrowthTracker.Repositories.Models;
 using GrowthTracker.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,42 +14,50 @@ namespace GrowthTracker.APIServices.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IAccountService accountService;
-        // GET: api/<OrderController>
-        public AccountController(IAccountService accountService)
-            => this.accountService = accountService;
+        private readonly IConfiguration _config;
+        private readonly IAccountService _userAccountsService;
 
-
-        // GET: api/<AccountController>
-        [HttpGet]
-        public async Task<Account> Login([FromBody] string username, string password)
+        public AccountController(IConfiguration config, IAccountService userAccountsService)
         {
-            return await accountService.LoginAccount(username, password);
+            _config = config;
+            _userAccountsService = userAccountsService;
         }
 
-        // GET api/<AccountController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpPost("Login")]
+        public IActionResult Login([FromBody] LoginReqeust request)
         {
-            return "value";
+            var user = _userAccountsService.LoginAccount(request.UserName, request.Password);
+
+            if (user == null || user.Result == null)
+                return Unauthorized();
+
+            var token = GenerateJSONWebToken(user.Result);
+
+            return Ok(token);
         }
 
-        // POST api/<AccountController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        private string GenerateJSONWebToken(Account systemUserAccount)
         {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"]
+                    , _config["Jwt:Audience"]
+                    , new Claim[]
+                    {
+                new(ClaimTypes.Name, systemUserAccount.Username),
+                //new(ClaimTypes.Email, systemUserAccount.Email),
+                new(ClaimTypes.Role, systemUserAccount.RoleId.ToString()),
+                    },
+                    expires: DateTime.Now.AddMinutes(120),
+                    signingCredentials: credentials
+                );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return tokenString;
         }
 
-        // PUT api/<AccountController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<AccountController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        public sealed record LoginReqeust(string UserName, string Password);
     }
-}
+    }

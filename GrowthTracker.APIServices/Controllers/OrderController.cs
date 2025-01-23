@@ -1,5 +1,6 @@
 ﻿using GrowthTracker.Repositories.Models;
 using GrowthTracker.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Numerics;
 
@@ -19,11 +20,13 @@ namespace GrowthTracker.APIServices.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "1,2,3")]
         public async Task<IEnumerable<Order>> Get()
         {
             return await orderService.GetOrdersAsync();
         }
         [HttpGet("{key}/{searchTerm}")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<IEnumerable<Order>> Search(string key, string searchTerm)
         {
             return await orderService.Search(key, searchTerm);
@@ -31,6 +34,7 @@ namespace GrowthTracker.APIServices.Controllers
 
         // GET api/<OrderController>/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<Order> Get(string id)
         {
             return await orderService.GetOrderByIdAsync(id);
@@ -38,6 +42,7 @@ namespace GrowthTracker.APIServices.Controllers
 
         // POST api/<OrderController>
         [HttpPost]
+        [Authorize(Roles = "1,2,3")]
         public async Task<int> Post([FromBody] Order orderCreate)
         {
             return await orderService.CreateOrderAsync(orderCreate);
@@ -45,6 +50,7 @@ namespace GrowthTracker.APIServices.Controllers
 
         // PUT api/<OrderController>/5
         [HttpPut]
+        [Authorize(Roles = "1,2,3")]
         public async Task<int> Put([FromBody] Order orderCreate)
         {
             return await orderService.UpdateOrderAsync(orderCreate);
@@ -52,6 +58,7 @@ namespace GrowthTracker.APIServices.Controllers
 
         // DELETE api/<OrderController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "3")]
         public async Task<bool> Delete(string id)
         {
             return await orderService.DeleteOrderAsync(id);
