@@ -54,6 +54,7 @@ namespace GrowthTracker.MVCWebApp.Controllers
 
                             Response.Cookies.Append("UserName", userName);
                             Response.Cookies.Append("Role", role);
+                            Response.Cookies.Append("TokenString", tokenString);
 
                             return RedirectToAction("Index", "Home");
                         }
@@ -77,6 +78,7 @@ namespace GrowthTracker.MVCWebApp.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             Response.Cookies.Delete("UserName");
             Response.Cookies.Delete("Role");
+            Response.Cookies.Delete("TokenString");
             return RedirectToAction("Login", "Account");
         }
 
