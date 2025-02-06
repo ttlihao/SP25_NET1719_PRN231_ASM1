@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.IdentityModel.Tokens.Jwt;
 using GrowthTracker.MVCWebApp.Models;
+using System.Data;
 
 namespace GrowthTracker.MVCWebApp.Controllers
 {
@@ -74,6 +75,8 @@ namespace GrowthTracker.MVCWebApp.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            Response.Cookies.Delete("UserName");
+            Response.Cookies.Delete("Role");
             return RedirectToAction("Login", "Account");
         }
 
