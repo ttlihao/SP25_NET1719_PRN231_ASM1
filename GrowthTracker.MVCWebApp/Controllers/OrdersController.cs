@@ -64,6 +64,61 @@ namespace GrowthTracker.MVCWebApp.Controllers
             return View();
         }
 
+        // GET: Orders/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                #region Add Token to header of Request
+                var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "TokenString").Value;
+
+                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenString);
+                #endregion
+
+                using (var response = await httpClient.GetAsync(APIEndPoint + "Order/" + id))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<Order>(content);
+
+                        if (result != null)
+                        {
+                            return View(result);
+                        }
+                    }
+                }
+            }
+            return View(new Order());
+        }
+        // GET: Orders/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                #region Add Token to header of Request
+                var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "TokenString").Value;
+
+                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenString);
+                #endregion
+
+                using (var response = await httpClient.DeleteAsync(APIEndPoint + "Order/" + id))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<Order>(content);
+
+                        if (result != null)
+                        {
+                            return RedirectToAction("Index", "Order");
+                        }
+                    }
+                }
+            }
+            return RedirectToAction("Index", "Order");
+        }
+
         //    // GET: Orders/Details/5
         //    public async Task<IActionResult> Details(int? id)
         //    {

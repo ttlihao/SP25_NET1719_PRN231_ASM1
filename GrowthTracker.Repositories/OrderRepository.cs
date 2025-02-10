@@ -18,7 +18,9 @@ namespace GrowthTracker.Repositories
         }
         public async Task<List<Order>> GetAllAsync()
         {
-            return await _context.Orders.Include(b => b.OrderDetails).ToListAsync();
+            return await _context.Orders.Include(b => b.OrderDetails)
+                .Include(b => b.Account)
+                .ToListAsync();
         }
         public async Task<List<Order>> Search (string key, string searchterms)
         {
