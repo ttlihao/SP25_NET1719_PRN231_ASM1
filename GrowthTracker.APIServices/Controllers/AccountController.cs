@@ -35,6 +35,18 @@ namespace GrowthTracker.APIServices.Controllers
 
             return Ok(token);
         }
+        [HttpGet("GetAllAccounts")]
+        public async Task<IActionResult> GetAllAccounts()
+        {
+            var accounts = await _userAccountsService.GetAccountsAsync();
+
+            if (accounts == null || !accounts.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(accounts);
+        }
 
         private string GenerateJSONWebToken(Account systemUserAccount)
         {
@@ -49,7 +61,7 @@ namespace GrowthTracker.APIServices.Controllers
                 //new(ClaimTypes.Email, systemUserAccount.Email),
                 new(ClaimTypes.Role, systemUserAccount.RoleId.ToString()),
                     },
-                    expires: DateTime.Now.AddMinutes(120),
+                    expires: DateTime.Now.AddSeconds(1),
                     signingCredentials: credentials
                 );
 
