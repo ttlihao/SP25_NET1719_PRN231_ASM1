@@ -12,12 +12,18 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Account.Username)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.OrderId)</th>
+            <th>@Html.DisplayNameFor(model => model.AccountId)</th>
+            <th>@Html.DisplayNameFor(model => model.OrderDate)</th>
+            <th>@Html.DisplayNameFor(model => model.CustomerName)</th>
+            <th>@Html.DisplayNameFor(model => model.CustomerEmail)</th>
+            <th>@Html.DisplayNameFor(model => model.ShippingAddress)</th>
+            <th>@Html.DisplayNameFor(model => model.BillingAddress)</th>
+            <th>@Html.DisplayNameFor(model => model.OrderTotal)</th>
+            <th>@Html.DisplayNameFor(model => model.OrderStatus)</th>
+            <th>@Html.DisplayNameFor(model => model.PaymentMethod)</th>
+            <th>@Html.DisplayNameFor(model => model.PaymentStatus)</th>
+            <th>@Html.DisplayNameFor(model => model.Account.Username)</th>
             <th></th>
         </tr>
     </thead>
@@ -25,12 +31,18 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Account.Username)
-                </td>
+                <td>@Html.DisplayFor(modelItem => item.OrderId)</td>
+                <td>@Html.DisplayFor(modelItem => item.AccountId)</td>
+                <td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.CustomerName)</td>
+                <td>@Html.DisplayFor(modelItem => item.CustomerEmail)</td>
+                <td>@Html.DisplayFor(modelItem => item.ShippingAddress)</td>
+                <td>@Html.DisplayFor(modelItem => item.BillingAddress)</td>
+                <td>@Html.DisplayFor(modelItem => item.OrderTotal)</td>
+                <td>@Html.DisplayFor(modelItem => item.OrderStatus)</td>
+                <td>@Html.DisplayFor(modelItem => item.PaymentMethod)</td>
+                <td>@Html.DisplayFor(modelItem => item.PaymentStatus)</td>
+                <td>@Html.DisplayFor(modelItem => item.Account.Username)</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
@@ -42,7 +54,7 @@
     </tbody>
 </table>
 
-<form id="deleteForm" asp-action="DeleteConfirmed" method="post" style="display:none;">
+<form id="deleteForm" asp-action="Delete" method="post" style="display:none;">
     <input type="hidden" name="id" id="deleteId" />
 </form>
 

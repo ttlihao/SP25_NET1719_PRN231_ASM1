@@ -61,7 +61,7 @@ namespace GrowthTracker.APIServices.Controllers
                 //new(ClaimTypes.Email, systemUserAccount.Email),
                 new(ClaimTypes.Role, systemUserAccount.RoleId.ToString()),
                     },
-                    expires: DateTime.Now.AddSeconds(1),
+                    expires: DateTime.Now.AddHours(60),
                     signingCredentials: credentials
                 );
 

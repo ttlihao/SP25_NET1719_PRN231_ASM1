@@ -24,6 +24,7 @@ public partial class PRN321_DatabaseContext : DbContext
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+
     public static string GetConnectionString(string connectionStringName)
     {
         var config = new ConfigurationBuilder()
@@ -68,9 +69,12 @@ public partial class PRN321_DatabaseContext : DbContext
 
             entity.ToTable("Order");
 
+            entity.HasIndex(e => e.AccountId, "IX_Order_AccountID");
+
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.OrderDate).HasColumnType("datetime");
+            entity.Property(e => e.OrderTotal).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.AccountId)
@@ -84,13 +88,14 @@ public partial class PRN321_DatabaseContext : DbContext
 
             entity.ToTable("OrderDetail");
 
+            entity.HasIndex(e => e.OrderId, "IX_OrderDetail_OrderID");
+
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.PremiumPackId).HasColumnName("PremiumPackID");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__OrderDeta__Order__4CA06362");
         });
 

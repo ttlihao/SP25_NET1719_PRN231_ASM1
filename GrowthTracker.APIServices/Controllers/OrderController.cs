@@ -50,7 +50,7 @@ namespace GrowthTracker.APIServices.Controllers
 
         // PUT api/<OrderController>/5
         [HttpPut]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "1")]
         public async Task<int> Put([FromBody] Order orderCreate)
         {
             return await orderService.UpdateOrderAsync(orderCreate);
@@ -58,7 +58,7 @@ namespace GrowthTracker.APIServices.Controllers
 
         // DELETE api/<OrderController>/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "1")]
         public async Task<bool> Delete(string id)
         {
             return await orderService.DeleteOrderAsync(id);

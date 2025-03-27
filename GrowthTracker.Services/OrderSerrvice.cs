@@ -63,8 +63,14 @@ namespace GrowthTracker.Services
         }
 
         public async Task<int> UpdateOrderAsync(Order order)
-        {
-            return await orderRepository.UpdateAsync(order);
+        {   try
+            {
+                return await orderRepository.UpdateAsync(order);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

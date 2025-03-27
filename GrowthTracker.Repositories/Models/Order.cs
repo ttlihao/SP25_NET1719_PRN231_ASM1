@@ -9,9 +9,25 @@ public partial class Order
 {
     public int OrderId { get; set; }
 
-    public int AccountId { get; set; }
+    public int? AccountId { get; set; }
 
-    public DateTime OrderDate { get; set; }
+    public DateTime? OrderDate { get; set; }
+
+    public string CustomerName { get; set; }
+
+    public string CustomerEmail { get; set; }
+
+    public string ShippingAddress { get; set; }
+
+    public string BillingAddress { get; set; }
+
+    public decimal? OrderTotal { get; set; }
+
+    public string OrderStatus { get; set; }
+
+    public string PaymentMethod { get; set; }
+
+    public string PaymentStatus { get; set; }
 
     public virtual Account Account { get; set; }
 

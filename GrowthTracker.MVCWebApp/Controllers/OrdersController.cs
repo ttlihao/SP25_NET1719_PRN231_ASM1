@@ -203,7 +203,7 @@ namespace GrowthTracker.MVCWebApp.Controllers
             return RedirectToAction("Index", "Orders");
         }
 
-        [HttpPost, ActionName("DeleteConfirmed")]
+        [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             using (var httpClient = new HttpClient())
@@ -286,7 +286,7 @@ namespace GrowthTracker.MVCWebApp.Controllers
         // POST: Orders/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,AccountId,OrderDate")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,AccountId,OrderDate,CustomerName,CustomerEmail,ShippingAddress,BillingAddress,OrderTotal,OrderStatus,PaymentMethod,PaymentStatus")] Order order)
         {
             if (id != order.OrderId)
             {
@@ -295,40 +295,61 @@ namespace GrowthTracker.MVCWebApp.Controllers
 
             if (ModelState.IsValid)
             {
-                using (var httpClient = new HttpClient())
+                try
                 {
-                    // Add Token to header of Request
-                    var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "TokenString").Value;
-
-                    if (!string.IsNullOrEmpty(tokenString))
+                    using (var httpClient = new HttpClient())
                     {
-                        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenString);
-                    }
+                        // Add Token to header of Request
+                        var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "TokenString").Value;
 
-                    // Send PUT request to API
-                    var content = new StringContent(JsonConvert.SerializeObject(order), Encoding.UTF8, "application/json");
-                    var response = await httpClient.PutAsync(APIEndPoint + "Order", content);
+                        if (!string.IsNullOrEmpty(tokenString))
+                        {
+                            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenString}");
+                        }
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return RedirectToAction(nameof(Index));
+                        // Send PUT request to API
+                        var content = new StringContent(JsonConvert.SerializeObject(order), Encoding.UTF8, "application/json");
+                        var response = await httpClient.PutAsync($"{APIEndPoint}Order", content);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return RedirectToAction(nameof(Index));
+                        }
+                        else
+                        {
+                            // Log the error or show feedback to the user
+                            ModelState.AddModelError(string.Empty, "Failed to update the order. Please try again.");
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions (logging)
+                    ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
                 }
             }
 
-            List<Account> accounts = new List<Account>();
+            // Fetch all accounts for dropdown
+            var accounts = await FetchAllAccounts();
+            ViewData["AccountId"] = new SelectList(accounts, "AccountId", "Username", order.AccountId);
+            return View(order);
+        }
+
+        // Helper method to fetch all accounts
+        private async Task<List<Account>> FetchAllAccounts()
+        {
+            var accounts = new List<Account>();
 
             using (var httpClient = new HttpClient())
             {
-                // Add Token to header of Request
                 var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "TokenString").Value;
 
                 if (!string.IsNullOrEmpty(tokenString))
                 {
-                    httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenString);
+                    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokenString}");
                 }
 
-                var response = await httpClient.GetAsync(APIEndPoint + "GetAllAccounts");
+                var response = await httpClient.GetAsync($"{APIEndPoint}GetAllAccounts");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -336,9 +357,9 @@ namespace GrowthTracker.MVCWebApp.Controllers
                 }
             }
 
-            ViewData["AccountId"] = new SelectList(accounts, "AccountId", "Username", order.AccountId);
-            return View(order);
+            return accounts;
         }
+
 
 
 
